@@ -18,7 +18,7 @@ FLASH_FROM_FILE=false
 FILES_TO_COMPILE="*.cpp"
 
 NUM_PARAMS=$#
-ALL_PARAMS=($@)
+ALL_PARAMS=( "$@" )
 
 #defines the help function
 function helpFunction {
@@ -47,7 +47,7 @@ function helpFunction {
 #defines the function for setting the required variables, depending on user parameters
 function configure  {
 
-	for var in $ALL_PARAMS
+	for var in "${ALL_PARAMS[@]}"
 	do
 		if [ "$var" = "-h" ]; then
 			helpFunction
