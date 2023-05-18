@@ -138,5 +138,12 @@ do
 	buildRodos $i
 done
 
+cd ..
+
+echo -e "\nEnableing execution permissions\n"
+
+sudo chmod +rwx scripts/build-for-linux.sh && echo -e "build-for-linux.sh \033[1;32mENABLED\033[0m"
+sudo chmod +rwx scripts/build-for-discovery.sh && echo -e "build-for-discovery.sh \033[1;32mENABLED\033[0m"
+
 echo -e "\nSetup Complete\n"
 exit 0
