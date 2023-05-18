@@ -7,6 +7,9 @@
 #   1: Parameter Error
 #   2: Package installation failure
 
+
+cd "$(dirname "$0")"
+
 ALL_RODOS_COMPILE_PARAMS=(discovery linux-makecontext on-posix64 skith efr32fg1p linux-x86 on-posixmac gecko on-posix sf2)
 RODOS_COMPILE_PARAMS=()
 
@@ -127,7 +130,7 @@ if [ "$COMPILE_ONLY" = false ]; then
 fi
 
 cd rodos
-git checkout a71ba2141cdf2e8c56eff041c1dec6113b0b9419  > /dev/null #revert to last know workin master for STM boards
+#(git checkout a71ba2141cdf2e8c56eff041c1dec6113b0b9419) > /dev/null #revert to last know workin master for STM boards
 
 echo -e "\nCompiling RODOS\n"
 for i in "${RODOS_COMPILE_PARAMS[@]}"
