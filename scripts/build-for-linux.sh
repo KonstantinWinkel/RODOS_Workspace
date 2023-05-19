@@ -24,7 +24,26 @@ ALL_PARAMS=( "$@" )
 
 #defines the help function
 function helpFunction {
-    echo "TODO"
+
+	echo -e "\033[1mPrerequisits:\033[0m"
+	echo -e "Make sure './setup.sh' has been run at least once and RODOS is compiled for Linux."
+	echo -e "You can do that by running './setup.sh -c linux-x86'."
+	echo -e "\n"
+    echo -e "\033[1mHow to use:\033[0m"
+	echo -e "Run './build-for-linux.sh' to compile files from the rodos_src directory and execute them on your linux machine."
+	echo -e "\n"
+	echo -e "\033[1mExamples:\033[0m"
+	echo -e "'./build-for-linux.sh'			compiles and executes all the files in rodos_src"
+	echo -e "'./build-for-linux.sh HelloWorld.cpp' 	only compiles and executes HelloWorld.cpp"
+	echo -e "'./build-for-linux.sh -f'		compiles and executes all the files specified in CompileList.txt"
+	echo -e "\n"
+	echo -e "\033[1mParameters:\033[0m"
+	echo -e "	-f	compiles and executes all files specified in CompileList.txt"
+	echo -e "	-h	shows this text explaination but does nothing else"
+	echo -e "	-l	doesnt remove the log file after compilation"
+	echo -e "	-s	shows the compiler output during compilation"
+	
+	exit 0
 }
 
 #defines the function for setting the required variables, depending on user parameters

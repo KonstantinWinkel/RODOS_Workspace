@@ -25,24 +25,24 @@ ALL_PARAMS=( "$@" )
 #defines the help function
 function helpFunction {
 
-	echo "Prerequisits:"
-	echo "1. Make sure RODOS is in its correct location"
-	echo "2. Make sure that RODOS is build for the STM32F4 Discovery Board"
-	echo "3. Move all files you want to compile and flash into the 'rodos_src' directory"
-	echo "4. Make sure RODOS is sourced by going into the RODOS directory and running 'source setenvs.sh'"
+	echo -e "\033[1mPrerequisits:\033[0m"
+	echo -e "Make sure './setup.sh' has been run at least once and RODOS is compiled for the STM32F4 Discovery board."
+	echo -e "You can do that by running './setup.sh -c discovery'."
 	echo -e "\n"
-	echo -e "Note: \nStep 4 is not necessary, as the script will try and source RODOS itself if it doesnt find the compiler. \nHowever, sourcing RODOS once manually is far more efficient. \n"
-
-	echo "How to use:"
-	echo "Run './falsh.sh' to flash all .cpp files in the directory 'rodos_src' onto the Discovery Board."
-	echo "If you only want to flash certain files, for example test.cpp, add then name as a parameter: './flash.sh test.cpp'"
+	echo -e "\033[1mHow to use:\033[0m"
+	echo -e "Run './build-for-discovery.sh' to compile files from the rodos_src directory and flash them onto your STM32F4 Discovery Board."
 	echo -e "\n"
-	echo "Parameters:"
-	echo "	-f	flash all files specified in FlashList.txt"
-	echo "	-h	shows this text explaination but does nothing else"
-	echo "	-l	doesnt remove the log file after compilation"
-	echo "	-s	shows the compiler output during compilation"
-
+	echo -e "\033[1mExamples:\033[0m"
+	echo -e "'./build-for-discovery.sh'			compiles and executes all the files in rodos_src"
+	echo -e "'./build-for-discovery.sh HelloWorld.cpp' 	only compiles and executes HelloWorld.cpp"
+	echo -e "'./build-for-discovery.sh -f'			compiles and executes all the files specified in CompileList.txt"
+	echo -e "\n"
+	echo -e "\033[1mParameters:\033[0m"
+	echo -e "	-f	compiles and flash all files specified in CompileList.txt"
+	echo -e "	-h	shows this text explaination but does nothing else"
+	echo -e "	-l	doesnt remove the log file after compilation"
+	echo -e "	-s	shows the compiler output during compilation"
+	
 	exit 0
 }
 
