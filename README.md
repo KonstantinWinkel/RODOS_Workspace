@@ -4,7 +4,7 @@ Created by: Konstantin Winkel
 
 This is a workspace template centered around RODOS and provides easy to use scripts to make working with RODOS as easy as possible regardless of the platform you're working with.
 
-Currently supported platforms: Linux and STM32F4 Discovery Board
+Currently supported platforms: Linux, STM32F4 Discovery Board, RaspbianOS
 
 Contents:
 1. Basic information about RODOS

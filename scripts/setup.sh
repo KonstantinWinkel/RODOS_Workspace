@@ -132,7 +132,7 @@ configure
 cd ..
 
 if [ "$COMPILE_ONLY" = false ]; then
-	echo -e "\nChecking required packages\n"
+	echo -e "Checking required packages\n"
 	CheckAndInstallPackage "apt-utils"
 	CheckAndInstallPackage "clang"
 	CheckAndInstallPackage "clang-format"
@@ -149,8 +149,8 @@ if [ "$COMPILE_ONLY" = false ]; then
 	CheckAndInstallPackage "libnewlib-arm-none-eabi"
 	CheckAndInstallPackage "cmake"
 
-	#clone and compile RODOS
-	echo -e "\nCloning RODOS\n"
+	#clone RODOS
+	echo -e "Cloning RODOS\n"
 	git clone https://gitlab.com/rodos/rodos
 fi
 
@@ -166,11 +166,15 @@ done
 
 cd ..
 
-echo -e "Enableing execution permissions\n"
+if [ "$COMPILE_ONLY" = false ]; then
 
-enableExecutionPermissions build-for-linux.sh
-enableExecutionPermissions build-for-discovery.sh
-enableExecutionPermissions build-for-raspbian.sh
+	echo -e "Enableing execution permissions\n"
+
+	enableExecutionPermissions build-for-linux.sh
+	enableExecutionPermissions build-for-discovery.sh
+	enableExecutionPermissions build-for-raspbian.sh
+
+fi
 
 echo -e "\nSetup Complete\n"
 exit 0
