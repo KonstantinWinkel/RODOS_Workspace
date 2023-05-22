@@ -132,7 +132,7 @@ configure
 cd ..
 
 if [ "$COMPILE_ONLY" = false ]; then
-	echo -e "Checking required packages\n"
+	echo -e "\nChecking required packages\n"
 	CheckAndInstallPackage "apt-utils"
 	CheckAndInstallPackage "clang"
 	CheckAndInstallPackage "clang-format"
@@ -150,7 +150,7 @@ if [ "$COMPILE_ONLY" = false ]; then
 	CheckAndInstallPackage "cmake"
 
 	#clone RODOS
-	echo -e "Cloning RODOS\n"
+	echo -e "\nCloning RODOS\n"
 	git clone https://gitlab.com/rodos/rodos
 fi
 
