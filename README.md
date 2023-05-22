@@ -45,6 +45,6 @@ Here are all the commands to setup the workspace for the STM32F4 Discovery Board
 As another example, here are the commands to setup the workspace for both Linux and the Discovery Board, and then only compile the HelloWorld.cpp file for Linux:
 
 ```
-./scripts/setup.sh discovery linux-x86
+./scripts/setup.sh discovery linux
 ./scripts/build-for-linux.sh HelloWorld.cpp
 ```
