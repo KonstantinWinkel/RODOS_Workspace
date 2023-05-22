@@ -12,7 +12,7 @@ cd "$(dirname "$0")"
 
 ALL_RODOS_COMPILE_PARAMS=(discovery linux-makecontext on-posix64 skith efr32fg1p linux-x86 on-posixmac gecko on-posix sf2)
 RODOS_COMPILE_PARAMS=()
-SUPPORTED_SETUP_PARAMS=(discovery linux-x86 raspbian)
+SUPPORTED_SETUP_PARAMS=(discovery linux raspbian)
 
 NUM_PARAMS=$#
 ALL_PARAMS=( "$@" )
@@ -112,6 +112,8 @@ function buildRodos {
 	source setenvs.sh > /dev/null
 	if [ "$1" = "raspbian" ]; then
 		rodos-lib.sh on-posix
+	elif [ "$1" = "linux" ]; then
+		rodos-lib.sh linux-x86
 	else
 		rodos-lib.sh $1
 	fi
@@ -170,6 +172,7 @@ if [ "$COMPILE_ONLY" = false ]; then
 
 	echo -e "Enableing execution permissions\n"
 
+	enableExecutionPermissions build-generic.sh
 	enableExecutionPermissions build-for-linux.sh
 	enableExecutionPermissions build-for-discovery.sh
 	enableExecutionPermissions build-for-raspbian.sh
