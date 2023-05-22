@@ -12,11 +12,13 @@ cd "$(dirname "$0")"
 
 ALL_RODOS_COMPILE_PARAMS=(discovery linux-makecontext on-posix64 skith efr32fg1p linux-x86 on-posixmac gecko on-posix sf2)
 RODOS_COMPILE_PARAMS=()
+SUPPORTED_SETUP_PARAMS=(discovery linux-x86 raspbian)
 
 NUM_PARAMS=$#
 ALL_PARAMS=( "$@" )
 
 COMPILE_ONLY=false
+ON_RASPBIAN=false
 
 function helpFunction {
 	echo -e "\033[1mHow to use:\033[0m"
@@ -32,11 +34,11 @@ function helpFunction {
 	echo -e "	-c 	only compiles RODOS for the specified platform (should only be used after this script already ran at least once)"
 	echo -e "	-h 	shows this text explaination but does nothing else"  
 	echo -e "\n"
-	echo -e "\033[1mBuild Parameters\033[0m"
+	echo -e "\033[1mCurrently supported setup parameters\033[0m"
 
-	for i in "${ALL_RODOS_COMPILE_PARAMS[@]}"
+	for i in "${SUPPORTED_SETUP_PARAMS[@]}"
 	do
-		echo -e "	$i"
+		echo -e "	- $i"
 	done
 
 	exit 0
@@ -56,8 +58,14 @@ function configure {
 			exit 0;
 		elif [ "$var" = "-c" ]; then
 			COMPILE_ONLY=true
+		elif [[ "${SUPPORTED_SETUP_PARAMS[*]}" =~ "${var}" ]]; then
+			RODOS_COMPILE_PARAMS+=($var)
+			if [ "$var" = "raspbian" ]; then
+				ON_RASPBIAN=true
+			fi
 		elif [[ "${ALL_RODOS_COMPILE_PARAMS[*]}" =~ "${var}" ]]; then
 			RODOS_COMPILE_PARAMS+=($var)
+			echo -e "\033[1;31mWARNING\033[0m: Using parameters compatible that are not supported in this workspace but can build RODOS is not recommended, proceed with care..."
 		else
 			echo -e "\033[1;31mERROR\033[0m: Invalid Parameters, use parameter -h for more info"
 			exit 1
@@ -102,7 +110,20 @@ function buildRodos {
 	echo -e "Building RODOS for $1"
 
 	source setenvs.sh > /dev/null
-	rodos-lib.sh $1
+	if [ "$1" = "raspbian" ]; then
+		rodos-lib.sh on-posix
+	else
+		rodos-lib.sh $1
+	fi
+}
+
+function enableExecutionPermissions {
+
+	if sudo chmod +rwx scripts/$1 2>/dev/null ; then
+		echo -e "$1 \033[1;32mENABLED\033[0m"
+	else
+		echo -e "$1 \033[1;31mDISABLED\033[0m - please check permissions manually"
+	fi
 }
 
 configure
@@ -117,14 +138,18 @@ if [ "$COMPILE_ONLY" = false ]; then
 	CheckAndInstallPackage "clang-format"
 	CheckAndInstallPackage "clang-tools"
 	CheckAndInstallPackage "gdb"
-	CheckAndInstallPackage "gcc-multilib"
-	CheckAndInstallPackage "g++-multilib"
+	
+	if [ "$ON_RASPBIAN" = false ]; then
+		CheckAndInstallPackage "gcc-multilib"
+		CheckAndInstallPackage "g++-multilib"
+	fi
+	
 	CheckAndInstallPackage "gcc-arm-none-eabi"
 	CheckAndInstallPackage "binutils-arm-none-eabi"
 	CheckAndInstallPackage "libnewlib-arm-none-eabi"
 	CheckAndInstallPackage "cmake"
 
-	#clone and compile RODOS
+	#clone RODOS
 	echo -e "\nCloning RODOS\n"
 	git clone https://gitlab.com/rodos/rodos
 fi
@@ -136,14 +161,20 @@ echo -e "\nCompiling RODOS\n"
 for i in "${RODOS_COMPILE_PARAMS[@]}"
 do
 	buildRodos $i
+	echo -e "\n"
 done
 
 cd ..
 
-echo -e "\nEnableing execution permissions\n"
+if [ "$COMPILE_ONLY" = false ]; then
 
-sudo chmod +rwx scripts/build-for-linux.sh && echo -e "build-for-linux.sh \033[1;32mENABLED\033[0m"
-sudo chmod +rwx scripts/build-for-discovery.sh && echo -e "build-for-discovery.sh \033[1;32mENABLED\033[0m"
+	echo -e "Enableing execution permissions\n"
+
+	enableExecutionPermissions build-for-linux.sh
+	enableExecutionPermissions build-for-discovery.sh
+	enableExecutionPermissions build-for-raspbian.sh
+
+fi
 
 echo -e "\nSetup Complete\n"
 exit 0
