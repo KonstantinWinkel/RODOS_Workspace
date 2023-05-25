@@ -29,7 +29,7 @@ FILES_TO_COMPILE="*.cpp"
 NUM_PARAMS=$#
 ALL_PARAMS=( "$@" )
 ALL_RODOS_COMPILE_PARAMS=(discovery linux-makecontext on-posix64 skith efr32fg1p linux-x86 on-posixmac gecko on-posix sf2)
-SUPPORTED_SETUP_PARAMS=(discovery linux-x86 raspbian)
+SUPPORTED_SETUP_PARAMS=(discovery linux raspbian)
 COMPILE_TARGET=$1
 UPPER_NAME=""
 LOWER_NAME=""
@@ -54,7 +54,7 @@ function setUpperAndLower {
 	elif [ "$COMPILE_TARGET" = "raspbian" ]; then
 		UPPER_NAME="RaspbianOS"
 		LOWER_NAME="raspbian"
-	elif [ "$COMPILE_TARGET" = "linux" ]; then
+	elif [ "$COMPILE_TARGET" = "linux-x86" ]; then
 		UPPER_NAME="Linux"
 		LOWER_NAME="linux"
 	fi
@@ -116,9 +116,9 @@ function configure  {
 #defines the function that compiles the files
 function compileFiles {
 	if [ "$SHOW_COMPILATION_OUTPUT" = true ]; then
-		rodos-executable.sh $COMPILE_TARGET $FILES_TO_COMPILE 2>&1 | tee -a CompilationLog
+		rodos-executable.sh $COMPILE_TARGET $FILES_TO_COMPILE 2>&1 | tee -a CompilationLog.txt
 	else
-		rodos-executable.sh $COMPILE_TARGET $FILES_TO_COMPILE 2> CompilationLog
+		rodos-executable.sh $COMPILE_TARGET $FILES_TO_COMPILE 2> CompilationLog.txt
 	fi
 }
 
@@ -150,14 +150,14 @@ function executeFunction {
 
 	if ! compileFiles ; then
   		echo "Compilation error, check CompilationLog for more information"
-		mv CompilationLog ..
+		mv CompilationLog.txt ..
 		exit 2
 	fi
 	
     if [ "$KEEP_COMPILATION_LOG" = false ]; then
-		rm CompilationLog
+		rm CompilationLog.txt
 	else 
-		mv CompilationLog ..
+		mv CompilationLog.txt ..
 	fi
 
 	echo "Moving executable to top directory..."
