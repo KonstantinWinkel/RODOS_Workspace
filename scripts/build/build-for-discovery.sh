@@ -14,7 +14,7 @@ cd "$(dirname "$0")"
 
 ALL_PARAMS=( "$@" )
 
-(./build-generic.sh discovery $ALL_PARAMS)
+(./build-generic.sh discovery "${ALL_PARAMS[@]}")
 BUILD_GENERIC_RETURN=$?
 
 #check if helpfunction was executed
