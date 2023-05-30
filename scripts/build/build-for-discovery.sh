@@ -28,7 +28,7 @@ if [ $BUILD_GENERIC_RETURN -ne 0 ]; then
 fi
 
 #create binary and flash
-cd ..
+cd ../..
 echo "Creating binary executable..."
 arm-none-eabi-objcopy -S -O binary tst myExe.bin
 

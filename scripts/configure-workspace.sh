@@ -2,8 +2,14 @@
 
 #	Author: Konstantin Winkel
 
+#	EXIT CODES:
+#	0: No Error
+#	1: Parameter Error
+
 #change into scripts directory for consistent behaviour
 cd "$(dirname "$0")"
+
+SUPPORTED_PLATFORMS=(discovery linux raspbian) #maybe move this to config in the future, used here and in setup.sh
 
 NUM_PARAMS=$#
 ALL_PARAMS=( "$@" )
@@ -25,12 +31,26 @@ function writeConfig {
 function changeSourceDirectory {
     readConfig
     CONFIG[0]="src_dir: $1"
+    CURRENT_PATH="$(pwd)"
+
+    if cd ../$1 2 > /dev/null; then
+        cd $CURRENT_PATH
+    else
+        mkdir -p ../$1
+    fi
+
     writeConfig
 }
 
 
 function changePreferredTarget {
     readConfig
+
+    if [[ ! "${SUPPORTED_PLATFORMS[*]}" =~ "$1" ]]; then
+        echo -e "\033[1;31mERROR\033[0m - new target preference not in list of supported targets"
+        exit 1
+    fi
+
     CONFIG[1]="target_pref: $1"
     writeConfig
 }

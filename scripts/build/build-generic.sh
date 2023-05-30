@@ -14,10 +14,16 @@
 cd "$(dirname "$0")"
 
 #source RODOS, if not found abort
-if ! source ../rodos/setenvs.sh > /dev/null ; then 
+if ! source ../../rodos/setenvs.sh > /dev/null ; then 
     echo -e "\033[1;31mERROR\033[0m RODOS not found, aborting.."
 	exit 3
 fi
+
+#clear previous outputs
+cd ../..
+rm CompilationLog.txt 2 > /dev/null
+rm tst 2 > /dev/null
+cd scripts/build
 
 #definition of variables
 KEEP_COMPILATION_LOG=false
@@ -43,7 +49,7 @@ if ! [[ "${ALL_RODOS_COMPILE_PARAMS[*]}" =~ "${COMPILE_TARGET}" ]]; then
 fi
 
 function readConfig {
-	IFS=$'\n' read -d '' -r -a CONFIG < ../workspace.config
+	IFS=$'\n' read -d '' -r -a CONFIG < ../../workspace.config
 	SRC_DIR_LINE_RAW=("${CONFIG[0]}")
 	SRC_DIR_LINE=($SRC_DIR_LINE_RAW)
 	SOURCE_DIR="${SRC_DIR_LINE[1]}"
@@ -148,7 +154,7 @@ function executeFunction {
 
 	readConfig
 
-	cd ..
+	cd ../..
 
 	if [ "$COMPILE_FROM_FILE" = true ]; then
 		readCompileList

@@ -29,5 +29,5 @@ fi
 
 #execute
 echo -e "Running executable... \n"
-cd ..
+cd ../..
 ./tst
