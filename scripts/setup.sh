@@ -172,10 +172,12 @@ if [ "$COMPILE_ONLY" = false ]; then
 
 	echo -e "Enableing execution permissions\n"
 
-	enableExecutionPermissions build-generic.sh
-	enableExecutionPermissions build-for-linux.sh
-	enableExecutionPermissions build-for-discovery.sh
-	enableExecutionPermissions build-for-raspbian.sh
+	enableExecutionPermissions configure-workspace.sh
+	enableExecutionPermissions build.sh
+	enableExecutionPermissions build/build-generic.sh
+	enableExecutionPermissions build/build-for-linux.sh
+	enableExecutionPermissions build/build-for-discovery.sh
+	enableExecutionPermissions build/build-for-raspbian.sh
 
 fi
 

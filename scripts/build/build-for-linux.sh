@@ -14,7 +14,7 @@ cd "$(dirname "$0")"
 
 ALL_PARAMS=( "$@" )
 
-(./build-generic.sh linux-x86 $ALL_PARAMS)
+(./build-generic.sh linux-x86 "${ALL_PARAMS[@]}")
 BUILD_GENERIC_RETURN=$?
 
 #check if helpfunction was executed
@@ -29,5 +29,5 @@ fi
 
 #execute
 echo -e "Running executable... \n"
-cd ..
+cd ../..
 ./tst

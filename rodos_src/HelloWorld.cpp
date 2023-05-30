@@ -8,7 +8,7 @@ class HelloWorldThread : public StaticThread<> {
         void init(){ }
 
         void run(){
-            PRINTF("Hello World");
+            PRINTF("Hello World\n");
         }
 
 } helloworldthread;

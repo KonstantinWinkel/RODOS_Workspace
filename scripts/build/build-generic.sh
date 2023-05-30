@@ -14,10 +14,16 @@
 cd "$(dirname "$0")"
 
 #source RODOS, if not found abort
-if ! source ../rodos/setenvs.sh > /dev/null ; then 
+if ! source ../../rodos/setenvs.sh > /dev/null ; then 
     echo -e "\033[1;31mERROR\033[0m RODOS not found, aborting.."
 	exit 3
 fi
+
+#clear previous outputs
+cd ../..
+rm CompilationLog.txt 2 > /dev/null
+rm tst 2 > /dev/null
+cd scripts/build
 
 #definition of variables
 KEEP_COMPILATION_LOG=false
@@ -25,6 +31,7 @@ SHOW_COMPILATION_OUTPUT=false
 COMPILE_ALL=true
 COMPILE_FROM_FILE=false
 FILES_TO_COMPILE="*.cpp"
+SOURCE_DIR="rodos_src"
 
 NUM_PARAMS=$#
 ALL_PARAMS=( "$@" )
@@ -40,6 +47,13 @@ if ! [[ "${ALL_RODOS_COMPILE_PARAMS[*]}" =~ "${COMPILE_TARGET}" ]]; then
 		exit 1
 	fi
 fi
+
+function readConfig {
+	IFS=$'\n' read -d '' -r -a CONFIG < ../../workspace.config
+	SRC_DIR_LINE_RAW=("${CONFIG[0]}")
+	SRC_DIR_LINE=($SRC_DIR_LINE_RAW)
+	SOURCE_DIR="${SRC_DIR_LINE[1]}"
+}
 
 function setSpecialCompileTargets {
 	if [ "$COMPILE_TARGET" = "raspbian" ]; then
@@ -76,10 +90,10 @@ function helpFunction {
 	echo -e "'./build-for-$LOWER_NAME.sh -f'		compiles and executes all the files specified in CompileList.txt"
 	echo -e "\n"
 	echo -e "\033[1mParameters:\033[0m"
-	echo -e "	-f	compiles and executes all files specified in CompileList.txt"
-	echo -e "	-h	shows this text explaination but does nothing else"
-	echo -e "	-l	doesnt remove the log file after compilation"
-	echo -e "	-s	shows the compiler output during compilation"
+	echo -e "    -f	   compiles and executes all files specified in CompileList.txt"
+	echo -e "    -h	   shows this text explaination but does nothing else"
+	echo -e "    -l	   doesnt remove the log file after compilation"
+	echo -e "    -s	   shows the compiler output during compilation"
 	
 	exit 100
 }
@@ -138,13 +152,17 @@ function readCompileList {
 #defines the funtion that handles the main program flow
 function executeFunction {
 
-	cd ..
+	readConfig
+
+	cd ../..
 
 	if [ "$COMPILE_FROM_FILE" = true ]; then
 		readCompileList
 	fi
 
-	cd rodos_src
+	rm tst 2> /dev/null
+
+	cd $SOURCE_DIR
 
 	echo "Compiling code..."
 
