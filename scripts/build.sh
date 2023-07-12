@@ -21,7 +21,7 @@ TARGET_PREF="${SRC_DIR_LINE[1]}"
 
 
 if [ "$TARGET_PREF" = "linux" ]; then
-    ./build/build-for-linux.sh "${ALL_PARAMS[@]}"
+    ./build/build-for-linux.sh "${ALL_PARAMS[@]}" #TODO ????? warum nur hier
 elif [ "$TARGET_PREF" = "raspbian" ]; then
     ./build/build-for-raspbian.sh $ALL_PARAMS
 elif [ "$TARGET_PREF" = "discovery" ]; then 

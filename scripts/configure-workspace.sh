@@ -28,6 +28,12 @@ function writeConfig {
     done
 }
 
+function changePrefferedList {
+    readConfig
+    CONFIG[2]="list_pref: $1"
+    writeConfig
+}
+
 function changeSourceDirectory {
     readConfig
     CONFIG[0]="src_dir: $1"
@@ -58,7 +64,17 @@ function changePreferredTarget {
 function revert2Default {
     CONFIG[0]="src_dir: rodos_src"
     CONFIG[1]="target_pref: linux"
+    CONFIG[2]="list_pref: CompileList.txt" 
     writeConfig
+}
+
+function showConfig {
+    readConfig
+
+    for var in "${CONFIG[@]}"
+    do
+        echo "$var"
+    done
 }
 
 function helpFunction {
@@ -70,7 +86,9 @@ function helpFunction {
     echo -e "'./configure-workspace.sh -target_pref discovery' changes the target preference to discovery"
     echo -e "\033[1mParameters:\033[0m"
     echo -e "    -h              shows this help text"
+    echo -e "    -s              shows the current config"
     echo -e "    -default        revert config back to default"
+    echo -e "    -list_pref      change the compile list preference"
     echo -e "    -src_dir        change the source directory"
     echo -e "    -target_pref    change the prefered target of build.sh"
 }
@@ -78,6 +96,8 @@ function helpFunction {
 function configure {
     if [ "${ALL_PARAMS[0]}" = "-h" ]; then
         helpFunction 
+    elif [ "${ALL_PARAMS[0]}" = "-s" ]; then
+        showConfig
     elif [ "${ALL_PARAMS[0]}" = "-default" ]; then
         revert2Default
     elif [ "${ALL_PARAMS[0]}" = "-src_dir" ]; then
