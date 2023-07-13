@@ -10,7 +10,8 @@ Contents:
 1. Basic information about RODOS
 2. Contents of the workspace
 3. Setup and configuration
-4. Usage Examples
+4. Usage examples
+5. Having multiple source directories in one workspace
 
 ------------------------------
 ### 1. Basic information about RODOS
@@ -58,8 +59,13 @@ To change the preferred compilation target use this command (make sure that the 
 ./scripts/configure-workspace.sh -target_pref <linux/discovery/raspbian>
 ```
 
+To change the preferred compile list file usse this command:
+```
+./scripts/configure-workspace.sh -list_pref <path_to_file>
+```
+
 ------------------------------
-### 4. Usage Examples
+### 4. Usage examples
 Here are all the commands to setup the workspace for the STM32F4 Discovery Boards, compile all the example files from the CompileList.txt (parameter `-f`) and flash them onto the board:
 ```
 ./scripts/setup.sh discovery
@@ -75,4 +81,14 @@ As another example, here are the commands to setup the workspace for both Linux 
 Alternatively, since Linux is the preferred target by default, instead of the second command you can simply use:
 ```
 ./scripts/build.sh HelloWorld.cpp
+```
+
+------------------------------
+### 5. Having multiple source directories in one workspace
+This workspace allows you to have multiple source directories and multiple compile lists.
+When building from the file list and source directory listed in workspace.config simply adding the '-f' parameter to your build script will be enough (as shown in 4.). If you want to build files from a different source directory or compile list without changing the values of workspace.config you can do so by using the '-d=other_src_dir' and the '-f=other_compile_list.txt' parameters respectively. These parameters work on all build scripts and make handling subprojects really easy while only needing a single instance of RODOS
+
+Example:
+```
+./scripts/build.sh -f=OtherList.txt -d=other_src_dir
 ```

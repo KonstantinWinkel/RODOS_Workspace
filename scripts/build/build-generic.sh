@@ -21,8 +21,8 @@ fi
 
 #clear previous outputs
 cd ../..
-rm CompilationLog.txt 2 > /dev/null
-rm tst 2 > /dev/null
+rm CompilationLog.txt 2>/dev/null
+rm tst 2>/dev/null
 cd scripts/build
 
 #definition of variables
@@ -30,6 +30,7 @@ KEEP_COMPILATION_LOG=false
 SHOW_COMPILATION_OUTPUT=false
 COMPILE_ALL=true
 COMPILE_FROM_FILE=false
+COMPILE_FROM_FILE_NAME="CompileList.txt"
 FILES_TO_COMPILE="*.cpp"
 SOURCE_DIR="rodos_src"
 
@@ -50,9 +51,15 @@ fi
 
 function readConfig {
 	IFS=$'\n' read -d '' -r -a CONFIG < ../../workspace.config
+
 	SRC_DIR_LINE_RAW=("${CONFIG[0]}")
 	SRC_DIR_LINE=($SRC_DIR_LINE_RAW)
 	SOURCE_DIR="${SRC_DIR_LINE[1]}"
+
+	LIST_PREF_LINE_RAW=("${CONFIG[2]}")
+	LIST_PREF_LINE=($LIST_PREF_LINE_RAW)
+	COMPILE_FROM_FILE_NAME="${LIST_PREF_LINE[1]}"
+
 }
 
 function setSpecialCompileTargets {
@@ -90,10 +97,13 @@ function helpFunction {
 	echo -e "'./build-for-$LOWER_NAME.sh -f'		compiles and executes all the files specified in CompileList.txt"
 	echo -e "\n"
 	echo -e "\033[1mParameters:\033[0m"
-	echo -e "    -f	   compiles and executes all files specified in CompileList.txt"
-	echo -e "    -h	   shows this text explaination but does nothing else"
-	echo -e "    -l	   doesnt remove the log file after compilation"
-	echo -e "    -s	   shows the compiler output during compilation"
+	echo -e "    -f	               | compiles and executes all files specified in the prefered CompileList"
+	echo -e "    -h	               | shows this text explaination but does nothing else"
+	echo -e "    -l	               | doesnt remove the log file after compilation"
+	echo -e "    -s	               | shows the compiler output during compilation"
+	echo -e " "
+	echo -e "    -d=<path_to_dir>  | sets the source directory, if not specified this is read from workspace.config"
+	echo -e "    -f=<path_to_file> | compiles and executes all files specified in the CompileList found at <path>"
 	
 	exit 100
 }
@@ -114,13 +124,18 @@ function configure  {
 			KEEP_COMPILATION_LOG=true
 		elif [ "$var" = "-s" ]; then # -s to show compilation output in console and write to file
 			SHOW_COMPILATION_OUTPUT=true
-		elif [[ $var =~ .*cpp.* ]]; then # cpp file -> add to compile list
+		elif [[ "$var" =~ .*cpp.* ]]; then # cpp file -> add to compile list
 			if [ "$COMPILE_ALL" = true ]; then
 				COMPILE_ALL=false
 				FILES_TO_COMPILE=$var
 			else
 				FILES_TO_COMPILE="$FILES_TO_COMPILE $var"
 			fi
+		elif [[ "$var" =~ "-d="* ]]; then
+			SOURCE_DIR="${var:3}"
+		elif [[ "$var" =~ "-f="* ]]; then
+			COMPILE_FROM_FILE=true
+			COMPILE_FROM_FILE_NAME="${var:3}"
 		fi
 	done
 
@@ -139,20 +154,27 @@ function compileFiles {
 #defines the function that reads the files to compile the CompileList.txt
 function readCompileList {
 
-	echo "Reading CompileList.txt"
+	echo "Reading $COMPILE_FROM_FILE_NAME"
+
+	local ORIGINAL_PATH
+	ORIGINAL_PATH="$(pwd)"
+
+	cd "$(dirname $COMPILE_FROM_FILE_NAME)"
 
 	FILES_TO_COMPILE=""
 
 	while IFS= read -r line || [[ -n "$line" ]]; do
-		FILES_TO_COMPILE="$FILES_TO_COMPILE $line"
-	done < "CompileList.txt"
+		if ! [[ "$line" =~ "# "* ]]; then
+			FILES_TO_COMPILE="$FILES_TO_COMPILE $line"
+		fi
+	done < "$(basename -- "$COMPILE_FROM_FILE_NAME")"
+
+	cd $ORIGINAL_PATH
 
 }
 
 #defines the funtion that handles the main program flow
 function executeFunction {
-
-	readConfig
 
 	cd ../..
 
@@ -185,5 +207,6 @@ function executeFunction {
 	exit 0
 }
 
+readConfig
 configure
 executeFunction
