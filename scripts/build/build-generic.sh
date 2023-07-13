@@ -21,8 +21,8 @@ fi
 
 #clear previous outputs
 cd ../..
-rm CompilationLog.txt 2 > /dev/null
-rm tst 2 > /dev/null
+rm CompilationLog.txt 2>/dev/null
+rm tst 2>/dev/null
 cd scripts/build
 
 #definition of variables
@@ -154,7 +154,12 @@ function compileFiles {
 #defines the function that reads the files to compile the CompileList.txt
 function readCompileList {
 
-	echo "Reading CompileList.txt"
+	echo "Reading $COMPILE_FROM_FILE_NAME"
+
+	local ORIGINAL_PATH
+	ORIGINAL_PATH="$(pwd)"
+
+	cd "$(dirname $COMPILE_FROM_FILE_NAME)"
 
 	FILES_TO_COMPILE=""
 
@@ -162,7 +167,9 @@ function readCompileList {
 		if ! [[ "$line" =~ "# "* ]]; then
 			FILES_TO_COMPILE="$FILES_TO_COMPILE $line"
 		fi
-	done < "$COMPILE_FROM_FILE_NAME"
+	done < "$(basename -- "$COMPILE_FROM_FILE_NAME")"
+
+	cd $ORIGINAL_PATH
 
 }
 

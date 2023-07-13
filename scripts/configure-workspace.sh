@@ -91,11 +91,12 @@ function helpFunction {
     echo -e "    -list_pref      change the compile list preference"
     echo -e "    -src_dir        change the source directory"
     echo -e "    -target_pref    change the prefered target of build.sh"
+    exit $1
 }
 
 function configure {
     if [ "${ALL_PARAMS[0]}" = "-h" ]; then
-        helpFunction 
+        helpFunction 0 
     elif [ "${ALL_PARAMS[0]}" = "-s" ]; then
         showConfig
     elif [ "${ALL_PARAMS[0]}" = "-default" ]; then
@@ -106,7 +107,7 @@ function configure {
         changePreferredTarget "${ALL_PARAMS[1]}"
     else
         echo -e "\033[1;31mERROR\033[0m invalid parameters"
-        exit 1
+        helpFunction 1
     fi
 }
 
