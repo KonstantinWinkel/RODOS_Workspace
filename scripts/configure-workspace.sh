@@ -105,6 +105,8 @@ function configure {
         changeSourceDirectory "${ALL_PARAMS[1]}"
     elif [ "${ALL_PARAMS[0]}" = "-target_pref" ]; then
         changePreferredTarget "${ALL_PARAMS[1]}"
+    elif [ "${ALL_PARAMS[0]}" = "-list_pref" ];then
+        changePrefferedList "${ALL_PARAMS[1]}"
     else
         echo -e "\033[1;31mERROR\033[0m invalid parameters"
         helpFunction 1
