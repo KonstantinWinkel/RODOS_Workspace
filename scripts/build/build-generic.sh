@@ -12,6 +12,7 @@
 
 #change into scripts directory for consistent behaviour
 cd "$(dirname "$0")"
+SCRIPT_LOCATION="$(pwd)"
 
 #source RODOS, if not found abort
 if ! source ../../rodos/setenvs.sh > /dev/null ; then 
@@ -182,7 +183,7 @@ function executeFunction {
 		readCompileList
 	fi
 
-	rm tst 2> /dev/null
+	rm tst 2>/dev/null
 
 	cd $SOURCE_DIR
 
@@ -197,11 +198,11 @@ function executeFunction {
     if [ "$KEEP_COMPILATION_LOG" = false ]; then
 		rm CompilationLog.txt
 	else 
-		mv CompilationLog.txt ..
+		mv CompilationLog.txt "$SCRIPT_LOCATION/../.."
 	fi
 
 	echo "Moving executable to top directory..."
-    mv tst ..
+    mv tst "$SCRIPT_LOCATION/../.."
     cd ..
 
 	exit 0

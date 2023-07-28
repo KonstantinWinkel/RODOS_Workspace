@@ -39,7 +39,7 @@ function changeSourceDirectory {
     CONFIG[0]="src_dir: $1"
     CURRENT_PATH="$(pwd)"
 
-    if cd ../$1 2 > /dev/null; then
+    if cd ../$1 2>/dev/null; then
         cd $CURRENT_PATH
     else
         mkdir -p ../$1
