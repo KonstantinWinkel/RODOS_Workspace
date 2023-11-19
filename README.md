@@ -86,7 +86,7 @@ Alternatively, since Linux is the preferred target by default, instead of the se
 ------------------------------
 ### 5. Having multiple source directories in one workspace
 This workspace allows you to have multiple source directories and multiple compile lists.
-When building from the file list and source directory listed in workspace.config simply adding the '-f' parameter to your build script will be enough (as shown in 4.). If you want to build files from a different source directory or compile list without changing the values of workspace.config you can do so by using the '-d=other_src_dir' and the '-f=other_compile_list.txt' parameters respectively. These parameters work on all build scripts and make handling subprojects really easy while only needing a single instance of RODOS
+When building from the file list and source directory listed in workspace.config simply adding the `-f` parameter to your build script will be enough (as shown in 4.). If you want to build files from a different source directory or compile list without changing the values of workspace.config you can do so by using the `-d=other_src_dir` and the `-f=other_compile_list.txt` parameters respectively. These parameters work on all build scripts and make handling subprojects really easy while only needing a single instance of RODOS
 
 Example:
 ```

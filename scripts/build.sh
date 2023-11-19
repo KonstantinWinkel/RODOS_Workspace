@@ -8,24 +8,23 @@
 #	2: Compilation Error
 #	3: RODOS not found
 #	127: Unkown Error
+#   128 Error changing directories
 
 #change into scripts directory for consistent behaviour
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.." || exit 128
 
 ALL_PARAMS=( "$@" )
 
-IFS=$'\n' read -d '' -r -a CONFIG < ../workspace.config
-SRC_DIR_LINE_RAW=("${CONFIG[1]}")
-SRC_DIR_LINE=($SRC_DIR_LINE_RAW)
-TARGET_PREF="${SRC_DIR_LINE[1]}"
+source scripts/util/config-util.sh
 
+readConfig
 
 if [ "$TARGET_PREF" = "linux" ]; then
-    ./build/build-for-linux.sh "${ALL_PARAMS[@]}"
+    ./scripts/build/build-for-linux.sh "${ALL_PARAMS[@]}"
 elif [ "$TARGET_PREF" = "raspbian" ]; then
-    ./build/build-for-raspbian.sh "${ALL_PARAMS[@]}"
+    ./scripts/build/build-for-raspbian.sh "${ALL_PARAMS[@]}"
 elif [ "$TARGET_PREF" = "discovery" ]; then 
-    ./build/build-for-discovery.sh "${ALL_PARAMS[@]}"
+    ./scripts/build/build-for-discovery.sh "${ALL_PARAMS[@]}"
 else 
     exit 1
 fi

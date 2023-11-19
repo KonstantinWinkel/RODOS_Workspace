@@ -5,30 +5,17 @@
 #	EXIT CODES:
 #	0: No Error
 #	1: Parameter Error
+#   128: Error changing directories
 
 #change into scripts directory for consistent behaviour
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.." || exit 128
 
-SUPPORTED_PLATFORMS=(discovery linux raspbian) #maybe move this to config in the future, used here and in setup.sh
+source scripts/util/config-util.sh
+source scripts/util/platform-util.sh
 
-NUM_PARAMS=$#
 ALL_PARAMS=( "$@" )
-CONFIG=( "" )
 
-function readConfig {
-    IFS=$'\n' read -d '' -r -a CONFIG < ../workspace.config
-}
-
-function writeConfig {
-    > ../workspace.config
-
-    for var in "${CONFIG[@]}"
-	do
-        echo $var >> ../workspace.config
-    done
-}
-
-function changePrefferedList {
+function changePreferedList {
     readConfig
     CONFIG[2]="list_pref: $1"
     writeConfig
@@ -39,15 +26,14 @@ function changeSourceDirectory {
     CONFIG[0]="src_dir: $1"
     CURRENT_PATH="$(pwd)"
 
-    if cd ../$1 2>/dev/null; then
-        cd $CURRENT_PATH
+    if cd ../"$1" 2>/dev/null; then
+        cd "$CURRENT_PATH" || exit 128
     else
-        mkdir -p ../$1
+        mkdir -p ../"$1"
     fi
 
     writeConfig
 }
-
 
 function changePreferredTarget {
     readConfig
@@ -59,22 +45,6 @@ function changePreferredTarget {
 
     CONFIG[1]="target_pref: $1"
     writeConfig
-}
-
-function revert2Default {
-    CONFIG[0]="src_dir: rodos_src"
-    CONFIG[1]="target_pref: linux"
-    CONFIG[2]="list_pref: CompileList.txt" 
-    writeConfig
-}
-
-function showConfig {
-    readConfig
-
-    for var in "${CONFIG[@]}"
-    do
-        echo "$var"
-    done
 }
 
 function helpFunction {
@@ -91,7 +61,7 @@ function helpFunction {
     echo -e "    -list_pref      change the compile list preference"
     echo -e "    -src_dir        change the source directory"
     echo -e "    -target_pref    change the prefered target of build.sh"
-    exit $1
+    exit "$1"
 }
 
 function configure {
@@ -106,7 +76,7 @@ function configure {
     elif [ "${ALL_PARAMS[0]}" = "-target_pref" ]; then
         changePreferredTarget "${ALL_PARAMS[1]}"
     elif [ "${ALL_PARAMS[0]}" = "-list_pref" ];then
-        changePrefferedList "${ALL_PARAMS[1]}"
+        changePreferedList "${ALL_PARAMS[1]}"
     else
         echo -e "\033[1;31mERROR\033[0m invalid parameters"
         helpFunction 1
