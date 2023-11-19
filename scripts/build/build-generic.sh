@@ -16,6 +16,12 @@ SCRIPT_LOCATION="$(pwd)"
 
 #get platform information
 source ../util/platform-util.sh
+source ../util/config-util.sh
+
+#read config
+cd ../..
+readConfig
+cd scripts/build
 
 #source RODOS, if not found abort
 if ! source ../../rodos/setenvs.sh > /dev/null ; then 
@@ -51,19 +57,6 @@ if ! [[ "${ALL_RODOS_COMPILE_PARAMS[*]}" =~ "${COMPILE_TARGET}" ]]; then
 		exit 1
 	fi
 fi
-
-function readConfig {
-	IFS=$'\n' read -d '' -r -a CONFIG < ../../workspace.config
-
-	SRC_DIR_LINE_RAW=("${CONFIG[0]}")
-	SRC_DIR_LINE=($SRC_DIR_LINE_RAW)
-	SOURCE_DIR="${SRC_DIR_LINE[1]}"
-
-	LIST_PREF_LINE_RAW=("${CONFIG[2]}")
-	LIST_PREF_LINE=($LIST_PREF_LINE_RAW)
-	COMPILE_FROM_FILE_NAME="${LIST_PREF_LINE[1]}"
-
-}
 
 function setSpecialCompileTargets {
 	if [ "$COMPILE_TARGET" = "raspbian" ]; then
@@ -210,6 +203,5 @@ function executeFunction {
 	exit 0
 }
 
-readConfig
 configure
 executeFunction

@@ -7,10 +7,10 @@
 #	1: Parameter Error
 
 #change into scripts directory for consistent behaviour
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
-source util/config-util.sh
-source util/platform-util.sh
+source scripts/util/config-util.sh
+source scripts/util/platform-util.sh
 
 NUM_PARAMS=$#
 ALL_PARAMS=( "$@" )

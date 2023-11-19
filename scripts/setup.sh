@@ -7,10 +7,10 @@
 #   1: Parameter Error
 #   2: Package installation failure
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
-source util/config-util.sh
-source util/platform-util.sh
+source scripts/util/config-util.sh
+source scripts/util/platform-util.sh
 
 RODOS_COMPILE_PARAMS=()
 
@@ -131,25 +131,31 @@ function CheckAndInstallPackage {
 }
 
 function buildRodos {
+
+	if [[ "$1" = "<none>" ]]; then
+		return
+	fi
+
 	echo -e "Building RODOS for $1"
 
 	cd "$WORKSPACE_PATH"/rodos
 
-	source setenvs.sh > /dev/null
-	if [ "$1" = "raspbian" ]; then
-		rodos-lib.sh on-posix
-	elif [ "$1" = "linux" ]; then
-		rodos-lib.sh linux-x86
-	else
-		rodos-lib.sh $1
-	fi
+	#source setenvs.sh > /dev/null
+	#if [ "$1" = "raspbian" ]; then
+	#	rodos-lib.sh on-posix
+	#elif [ "$1" = "linux" ]; then
+	#	rodos-lib.sh linux-x86
+	#else
+	#	rodos-lib.sh $1
+	#fi
+
+	cd ..
 
 	setCompiledPlatform $1
 }
 
 function buildPlatforms {
 	echo -e "\nCompiling RODOS\n"
-
 
 	cd "$WORKSPACE_PATH"/rodos
 
@@ -163,7 +169,7 @@ function buildPlatforms {
 
 function enableExecutionPermissions {
 
-	if sudo chmod +rwx  2>/dev/null ; then
+	if sudo chmod +rwx $1 2>/dev/null ; then
 		echo -e "$1 \033[1;32mENABLED\033[0m"
 	else
 		echo -e "$1 \033[1;31mDISABLED\033[0m - please check permissions manually"
@@ -176,14 +182,7 @@ function updateRODOS {
 	cd "$WORKSPACE_PATH/rodos"
 	git pull
 
-	for platform in "${COMPILED_PLATFORMS[@]}"
-	do
-		if [[ "$platform" = "compiled_for:" ]]; then
-			continue 1
-		fi
-
-		buildRodos "$platform"
-	done
+	buildPlatforms
 
 	echo -e "done"
 }
@@ -194,14 +193,7 @@ function revertRODOS {
 	cd "$WORKSPACE_PATH/rodos"
 	git checkout a71ba2141cdf2e8c56eff041c1dec6113b0b9419 
 
-	for platform in "${COMPILED_PLATFORMS[@]}"
-	do
-		if [[ "$platform" = "compiled_for:" ]]; then
-			continue 1
-		fi
-
-		buildRodos "$platform"
-	done
+	buildPlatforms
 
 	echo -e "done"
 }
