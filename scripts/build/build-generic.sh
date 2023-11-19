@@ -14,6 +14,9 @@
 cd "$(dirname "$0")"
 SCRIPT_LOCATION="$(pwd)"
 
+#get platform information
+source ../util/platform-util.sh
+
 #source RODOS, if not found abort
 if ! source ../../rodos/setenvs.sh > /dev/null ; then 
     echo -e "\033[1;31mERROR\033[0m RODOS not found, aborting.."
@@ -37,8 +40,7 @@ SOURCE_DIR="rodos_src"
 
 NUM_PARAMS=$#
 ALL_PARAMS=( "$@" )
-ALL_RODOS_COMPILE_PARAMS=(discovery linux-makecontext on-posix64 skith efr32fg1p linux-x86 on-posixmac gecko on-posix sf2)
-SUPPORTED_SETUP_PARAMS=(discovery linux raspbian)
+
 COMPILE_TARGET=$1
 UPPER_NAME=""
 LOWER_NAME=""

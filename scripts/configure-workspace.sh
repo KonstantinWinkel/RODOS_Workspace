@@ -9,24 +9,11 @@
 #change into scripts directory for consistent behaviour
 cd "$(dirname "$0")"
 
-SUPPORTED_PLATFORMS=(discovery linux raspbian) #maybe move this to config in the future, used here and in setup.sh
+source util/config-util.sh
+source util/platform-util.sh
 
 NUM_PARAMS=$#
 ALL_PARAMS=( "$@" )
-CONFIG=( "" )
-
-function readConfig {
-    IFS=$'\n' read -d '' -r -a CONFIG < ../workspace.config
-}
-
-function writeConfig {
-    > ../workspace.config
-
-    for var in "${CONFIG[@]}"
-	do
-        echo $var >> ../workspace.config
-    done
-}
 
 function changePrefferedList {
     readConfig
@@ -48,7 +35,6 @@ function changeSourceDirectory {
     writeConfig
 }
 
-
 function changePreferredTarget {
     readConfig
 
@@ -59,22 +45,6 @@ function changePreferredTarget {
 
     CONFIG[1]="target_pref: $1"
     writeConfig
-}
-
-function revert2Default {
-    CONFIG[0]="src_dir: rodos_src"
-    CONFIG[1]="target_pref: linux"
-    CONFIG[2]="list_pref: CompileList.txt" 
-    writeConfig
-}
-
-function showConfig {
-    readConfig
-
-    for var in "${CONFIG[@]}"
-    do
-        echo "$var"
-    done
 }
 
 function helpFunction {
