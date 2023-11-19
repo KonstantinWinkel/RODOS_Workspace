@@ -140,14 +140,14 @@ function buildRodos {
 
 	cd "$WORKSPACE_PATH"/rodos
 
-	#source setenvs.sh > /dev/null
-	#if [ "$1" = "raspbian" ]; then
-	#	rodos-lib.sh on-posix
-	#elif [ "$1" = "linux" ]; then
-	#	rodos-lib.sh linux-x86
-	#else
-	#	rodos-lib.sh $1
-	#fi
+	source setenvs.sh > /dev/null
+	if [ "$1" = "raspbian" ]; then
+		rodos-lib.sh on-posix
+	elif [ "$1" = "linux" ]; then
+		rodos-lib.sh linux-x86
+	else
+		rodos-lib.sh $1
+	fi
 
 	cd ..
 
@@ -265,7 +265,7 @@ function runSetupScript {
 
 	cd rodos
 	buildPlatforms
-	
+
 	setAllScriptPermissions
 
 	echo -e "\nSetup Complete\n"
