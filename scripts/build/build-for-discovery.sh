@@ -8,9 +8,10 @@
 #	2: Compilation Error
 #	3: RODOS not found
 #	127: Unkown Error
+#	128: Error changing directories
 
 #change into scripts directory for consistent behaviour
-cd "$(dirname "$0")"
+cd "$(dirname "$0")" || exit 128
 
 ALL_PARAMS=( "$@" )
 
@@ -33,7 +34,7 @@ echo "Creating binary executable..."
 arm-none-eabi-objcopy -S -O binary tst myExe.bin
 
 echo "Flashing board..."
-cp myExe.bin /media/$USER/DIS_F407VG
+cp myExe.bin "/media/$USER/DIS_F407VG"
 
 echo "Removing temporary files..."
 rm myExe.bin

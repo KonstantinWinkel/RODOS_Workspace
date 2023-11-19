@@ -4,10 +4,10 @@
 
 CONFIG=( )
 
-SRC_DIR=""
-TARGET_PREF=""
-LIST_PREF=""
-COMPILED_PLATFORMS=( )
+export SRC_DIR=""
+export TARGET_PREF=""
+export LIST_PREF=""
+export COMPILED_PLATFORMS=( )
 
 function readConfig {
     local config_line=""
@@ -36,7 +36,7 @@ function readConfig {
                         continue 1
                     fi
 
-                    COMPILED_PLATFORMS+=($compiled_platform)
+                    COMPILED_PLATFORMS+=("$compiled_platform")
                 done
                 ;;
             *)
@@ -49,11 +49,11 @@ function readConfig {
 }
 
 function writeConfig {
-    > workspace.config
+    true > workspace.config
 
     for var in "${CONFIG[@]}"
 	do
-        echo $var >> workspace.config
+        echo "$var" >> workspace.config
     done
 }
 
@@ -80,9 +80,10 @@ function setCompiledPlatform {
     local platform_found=false
 
     for arg in "$@"
-    do
-        if [[ "${COMPILED_PLATFORMS[1]}" = "<none>" ]]; then
-            COMPILED_PLATFORMS[1]="$arg"
+    do  
+        echo "${COMPILED_PLATFORMS[0]}"
+        if [[ "${COMPILED_PLATFORMS[0]}" = "<none>" ]]; then
+            COMPILED_PLATFORMS[0]="$arg"
             continue 1
         fi
 
@@ -98,7 +99,7 @@ function setCompiledPlatform {
             continue 1
         fi
 
-        COMPILED_PLATFORMS+=($arg)
+        COMPILED_PLATFORMS+=("$arg")
     done
 
     for platform in "${COMPILED_PLATFORMS[@]}"
@@ -108,7 +109,6 @@ function setCompiledPlatform {
         fi
 
         platform_string="$platform_string $platform"
-        echo $platform_string
     done
 
     CONFIG[3]="$platform_string"

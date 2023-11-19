@@ -9,9 +9,10 @@
 #	3: RODOS not found
 #	100: Help function exit
 #	127: Unkown Error
+#	128: Error changing directories
 
 #change into scripts directory for consistent behaviour
-cd "$(dirname "$0")"
+cd "$(dirname "$0")" || exit 128
 SCRIPT_LOCATION="$(pwd)"
 
 #get platform information
@@ -21,7 +22,7 @@ source ../util/config-util.sh
 #read config
 cd ../..
 readConfig
-cd scripts/build
+cd scripts/build || exit 128
 
 #source RODOS, if not found abort
 if ! source ../../rodos/setenvs.sh > /dev/null ; then 
@@ -33,7 +34,7 @@ fi
 cd ../..
 rm CompilationLog.txt 2>/dev/null
 rm tst 2>/dev/null
-cd scripts/build
+cd scripts/build || exit 128
 
 #definition of variables
 KEEP_COMPILATION_LOG=false
@@ -44,7 +45,6 @@ COMPILE_FROM_FILE_NAME="CompileList.txt"
 FILES_TO_COMPILE="*.cpp"
 SOURCE_DIR="rodos_src"
 
-NUM_PARAMS=$#
 ALL_PARAMS=( "$@" )
 
 COMPILE_TARGET=$1
@@ -52,8 +52,8 @@ UPPER_NAME=""
 LOWER_NAME=""
 
 #check if compile parameter is ok
-if ! [[ "${ALL_RODOS_COMPILE_PARAMS[*]}" =~ "${COMPILE_TARGET}" ]]; then
-	if ! [[ "${SUPPORTED_SETUP_PARAMS[*]}" =~ "${COMPILE_TARGET}" ]]; then
+if ! [[ "${ALL_RODOS_COMPILE_PARAMS[*]}" =~ "$COMPILE_TARGET" ]]; then
+	if ! [[ "${SUPPORTED_SETUP_PARAMS[*]}" =~ "$COMPILE_TARGET" ]]; then
 		exit 1
 	fi
 fi
@@ -141,9 +141,9 @@ function configure  {
 #defines the function that compiles the files
 function compileFiles {
 	if [ "$SHOW_COMPILATION_OUTPUT" = true ]; then
-		rodos-executable.sh $COMPILE_TARGET $FILES_TO_COMPILE 2>&1 | tee -a CompilationLog.txt
+		rodos-executable.sh "$COMPILE_TARGET" "$FILES_TO_COMPILE" 2>&1 | tee -a CompilationLog.txt
 	else
-		rodos-executable.sh $COMPILE_TARGET $FILES_TO_COMPILE 2> CompilationLog.txt
+		rodos-executable.sh "$COMPILE_TARGET" "$FILES_TO_COMPILE" 2> CompilationLog.txt
 	fi
 }
 
@@ -155,7 +155,7 @@ function readCompileList {
 	local ORIGINAL_PATH
 	ORIGINAL_PATH="$(pwd)"
 
-	cd "$(dirname $COMPILE_FROM_FILE_NAME)"
+	cd "$(dirname "$COMPILE_FROM_FILE_NAME")" || exit 128
 
 	FILES_TO_COMPILE=""
 
@@ -165,7 +165,7 @@ function readCompileList {
 		fi
 	done < "$(basename -- "$COMPILE_FROM_FILE_NAME")"
 
-	cd $ORIGINAL_PATH
+	cd "$ORIGINAL_PATH" || exit 128
 
 }
 
@@ -180,7 +180,7 @@ function executeFunction {
 
 	rm tst 2>/dev/null
 
-	cd $SOURCE_DIR
+	cd "$SOURCE_DIR" || exit 128
 
 	echo "Compiling code..."
 
