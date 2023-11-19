@@ -53,7 +53,7 @@ LOWER_NAME=""
 
 #check if compile parameter is ok
 if ! [[ "${ALL_RODOS_COMPILE_PARAMS[*]}" =~ "$COMPILE_TARGET" ]]; then
-	if ! [[ "${SUPPORTED_SETUP_PARAMS[*]}" =~ "$COMPILE_TARGET" ]]; then
+	if ! [[ "${SUPPORTED_PLATFORMS[*]}" =~ "$COMPILE_TARGET" ]]; then
 		exit 1
 	fi
 fi
