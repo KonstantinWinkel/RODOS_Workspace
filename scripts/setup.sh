@@ -259,12 +259,13 @@ function runSetupScript {
 	echo -e "\nCloning RODOS\n"
 	git clone https://gitlab.com/rodos/rodos
 
-	cd rodos
 
 	echo -e "\nCompiling RODOS\n"
-
 	readConfig
+
+	cd rodos
 	buildPlatforms
+	
 	setAllScriptPermissions
 
 	echo -e "\nSetup Complete\n"

@@ -40,7 +40,7 @@ function readConfig {
                 done
                 ;;
             *)
-                echo WARNING TODO
+                echo -e "\033[1;35mWARNING\033[0m - config was altered manually: $config_option unkown" 
                 ;;
         esac
 
@@ -54,7 +54,6 @@ function writeConfig {
     for var in "${CONFIG[@]}"
 	do
         echo $var >> workspace.config
-        echo $var
     done
 }
 
